@@ -19,7 +19,7 @@ def fuzz(url, progress, queue_lock,timeout):
     error_count=0
     error_request_count=0
     while True:
-        # Безопасное получение из очереди
+        
         with queue_lock:
             if lines_queue.empty():
                 break
@@ -30,11 +30,11 @@ def fuzz(url, progress, queue_lock,timeout):
         try:
             response = requests.get(
                 full_url, 
-                timeout=timeout,  # tаймаут для безопасности
-                allow_redirects=False  # не следуем редиректам при фаззинге
+                timeout=timeout, 
+                allow_redirects=False  
             )
         
-            # Выводим только интересные статусы
+            
             with open(file_name,'a+') as file:
                 if response.status_code == 200:
                     progress.write(Fore.GREEN + f"[OK {response.status_code}] {full_url}")
@@ -60,10 +60,10 @@ def fuzz(url, progress, queue_lock,timeout):
             progress.write(Fore.RED + f'Error:{error_request_count}')
             with open('errors.txt','a+') as error_c:
                 error_c.write(str(e))
-        # Обновляем прогресс-бар
+        
         progress.update(1)
         
-        #Done Task
+        
         lines_queue.task_done()
 
 def get_args():
@@ -73,7 +73,7 @@ def get_args():
     parser.add_argument('-t','--threads',help='The count of threads',default=25)
     parser.add_argument('-tm','--timeout',help='The timeout count',default=5)
 
-    #запрашиваем интерактивно , если не передан аргумент
+   
     args = parser.parse_args()
     if not args.url:
         args.url = input(Fore.YELLOW + 'Введите URL:\n')
@@ -100,7 +100,7 @@ def main():
         return
     
     print(Fore.YELLOW+ Style.BRIGHT +f"[+]Загружено {lines} words для фаззинга из словаря")
-    # Загружаем все строки в очередь
+    
     global lines_queue
     lines_queue = queue.Queue()
     
@@ -108,12 +108,12 @@ def main():
         for line in f:
             lines_queue.put(line.strip())
     
-    #  прогресс-бар
+    
     progress = tqdm(total=lines, desc="Fuzzing", unit="req")
     
     queue_lock = threading.Lock()
     
-    # Создаем и запускаем потоки
+    
     threads = []
     for i in range(thread_s):
         t = Thread(
@@ -121,18 +121,18 @@ def main():
             args=(target_url, progress, queue_lock,timeout), 
             name=f"Fuzzer-{i}"
         )
-        t.daemon = False  # Даем потокам завершиться нормально
+        t.daemon = False  
         t.start()
         threads.append(t)
     print(Fore.RED + Style.BRIGHT + 'DEFAULT_THREADS: 25')
     print(Fore.YELLOW + Style.BRIGHT + f"Запущено {thread_s} потоков...")
     
-    # Ждем завершения всех задач в очереди
+    
     lines_queue.join()
     
-    # Ждем завершения потоков
+    
     for t in threads:
-        t.join(timeout=1)  # Таймаут на случай проблем
+        t.join(timeout=1)  
     
     progress.close()
     print(Fore.GREEN + Style.BRIGHT + "[+] Done !")
@@ -140,3 +140,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
