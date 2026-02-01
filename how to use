@@ -1,0 +1,19 @@
+
+____      _     ___         _____  _   _  _____ _____ _____  ____
+|  _ \    / \   |_ _|       |  ___|| | | ||__  /|__  /| ____||  _ \
+| |_) |  / _ \   | |        | |_   | | | |  / /   / / |  _|  | |_) |
+|  _ <  / ___ \  | |        |  _|  | |_| | / /_  / /_ | |___ |  _ <
+|_| \_\/_/   \_\|___| _____ |_|     \___/ /____|/____||_____||_| \_\
+|_____|
+
+usage: rai_fuzzer.py [-h] [-u URL] [-w WORDLISTS] [-t THREADS] [-tm TIMEOUT]
+
+options:
+-h, --help            show this help message and exit
+-u, --url URL         Target Url
+-w, --wordlists WORDLISTS
+Path to wordlist
+-t, --threads THREADS
+The count of threads
+-tm, --timeout TIMEOUT
+The timeout count
